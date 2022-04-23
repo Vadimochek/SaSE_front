@@ -5,7 +5,10 @@ import {deleteBrand} from "../../../../http/DeleteApi";
 
 
 
-
+/**
+ * Класс-хранилище удалённых типов
+ * @class
+ */
 export default class StoreDeleteType {
 
 

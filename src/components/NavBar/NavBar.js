@@ -17,6 +17,11 @@ import AlertDialog from "../Common/AlertDialog/alert";
 
 
 
+/**
+ * Компонента для отображения меню навигации
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 
 const NavBar = observer(() => {
     const {user, device, basket} = useContext(Context)

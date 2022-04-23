@@ -27,7 +27,11 @@ const ButtonSlider = styled(Button)({
         background: 'rgba(0,0,0,0.4)',
     }
 })
+/**
+ * Класс, который реализует слайдер на главной странице
+ * @class
 
+ */
 class Slider extends Component {
 
     constructor(props) {

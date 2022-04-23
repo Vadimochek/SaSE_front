@@ -6,6 +6,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+/**
+ * Компонента отображения всплывающего окна
+ * @function
+ * @param {object} - данные для всплывающего окна
+ * @returns {JSX} - Разметка страницы
+ */
 
 export default function AlertDialog({callback,questionText='',  text='', isOpen}) {
 

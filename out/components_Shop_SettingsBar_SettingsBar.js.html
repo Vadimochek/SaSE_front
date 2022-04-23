@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Shop/SettingsBar/SettingsBar.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Shop/SettingsBar/SettingsBar.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useContext, useEffect, useState} from 'react';
+import {Context} from "../../../index";
+import {Col, Container, Dropdown, FormControl, InputGroup, Row} from "react-bootstrap";
+import {observer} from "mobx-react-lite";
+import {useHistory, useLocation, useParams} from "react-router-dom";
+import {SHOP_ROUTE} from "../../../utils/consts";
+import {BarLoader} from "react-spinners";
+import {GoSettings, ImCheckboxChecked, ImCheckboxUnchecked} from "react-icons/all";
+import {CSSTransition, Transition} from "react-transition-group";
+import '../Shop.css'
+import './settingsBar.css'
+import InputRange from "react-input-range";
+import 'react-input-range/lib/css/index.css'
+import { Divider, Typography} from "@material-ui/core";
+import {Button, Input, Slider} from "@mui/material";
+
+
+const minDistance = 1000
+
+/**
+ * Компонента для отображения меню настроек
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
+const SettingsBar = observer(() => {
+    const {device} = useContext(Context)
+    const {type: typeUrl} = useParams();
+    const history = useHistory()
+    const brands = typeUrl ? (device.BrandInType.filter((type) => type.name === typeUrl))[0]?.brands : []
+    const [isOpenMenu, setIsOpenMenu] = useState(false)
+    const {search} = useLocation();
+
+    let [value1, SetValue1] = useState([12, 20])
+
+
+    useEffect(() => {
+        device.returnPriceRangeToInitial()
+    }, [typeUrl])
+
+    useEffect(() => {
+        SetValue1([Number(device.ClientMinPrice), Number(device.ClientMaxPrice),])
+    }, [device.ClientMinPrice, device.ClientMaxPrice])
+
+
+    const handleChange1 = (event, newValue, activeThumb) => {
+        if (!Array.isArray(newValue)) {
+            return;
+        }
+
+        if (activeThumb === 0) {
+            SetValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+        } else {
+            SetValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
+        }
+    };
+
+    function MenuVisible() {
+        setIsOpenMenu(!isOpenMenu)
+    }
+
+    function approveSettings() {
+        device.setCurrentPage(1)
+        device.setPriceQuery(value1)
+        history.push(`${typeUrl}?${device.createStrParamsForRequest(typeUrl)}`)
+    }
+
+    return (
+        &lt;div className={'mt-3 mb-3'}>
+
+            {/*{typeUrl &amp;&amp;*/}
+            {/*&lt;div className={'pb-3'}>*/}
+            {/*    &lt;Button className={'buttonSettings'} onClick={MenuVisible} variant="outlined" size="medium">*/}
+            {/*        &lt;p className={'additionalSettings'}>*/}
+            {/*            &lt;span>Дополнительные параметры поиска&lt;/span>*/}
+            {/*            &lt;GoSettings viewBox="0 0 20 20" height="10" width="10"/>*/}
+            {/*        &lt;/p>*/}
+            {/*    &lt;/Button>*/}
+            {/*&lt;/div>*/}
+            {/*}*/}
+
+
+            &lt;Transition
+                in={true}
+                timeout={{
+                    enter: 500,
+                    exit: 500,
+                }}
+                exit={false}
+                mountOnEnter={true}
+                unmountOnExit={true}
+            >
+                {(state) => &lt;div className={`mt-3`}>
+
+                    &lt;div className={`settingsAppear ${state}`}>
+
+
+                        &lt;Row className={`flex-column`}>
+
+                            &lt;Typography gutterBottom={true} variant={'h6'}>
+                            &lt;span className={'choseBrandsHeader'}>
+                                бренды:
+                            &lt;/span>
+                            &lt;/Typography>
+
+                            {device.BrandInType.length === 0
+                                ?
+                                &lt;BarLoader/>
+                                : &lt;>
+
+                                    &lt;div className={'blockBrandsSettings'} xs={12}>
+                                        &lt;div onClick={() => device.toggleAllBrands(typeUrl)}
+                                             className={'checkBlockBrand'}
+                                             style={{cursor: 'pointer', margin: '0.5rem'}}
+                                        >
+                                            &lt;Typography variant={'body1'}>Выбрать Все&lt;/Typography>
+                                            {device.isAllSelected
+                                                ? &lt;ImCheckboxChecked/>
+                                                : &lt;ImCheckboxUnchecked/>
+                                            }
+                                        &lt;/div>
+                                        &lt;Divider/>
+
+                                    &lt;/div>
+
+                                    &lt;div className={'brandMaxHeight'}>
+                                        {brands.map(brand =>
+                                            &lt;div className={'blockBrandsSettings'} xs={12} key={brand.id}>
+                                                &lt;div onClick={() => device.changeSelectedBrand(typeUrl, brand.name)}
+                                                     className={'checkBlockBrand'}
+                                                     style={{cursor: 'pointer', margin: '0.5rem'}}
+                                                >
+                                                    &lt;Typography variant={'body2'}>{brand.name}&lt;/Typography>
+                                                    {brand.isCheck
+                                                        ? &lt;ImCheckboxChecked/>
+                                                        : &lt;ImCheckboxUnchecked/>
+                                                    }
+                                                &lt;/div>
+                                                &lt;Divider/>
+
+                                            &lt;/div>
+                                        )}
+                                    &lt;/div>
+                                &lt;/>
+
+                            }
+                        &lt;/Row>
+
+
+
+
+                        {Number(device.MaxPrice) !== Number(device.MinPrice) &amp;&amp; &lt;>
+                            &lt;Row>
+
+                                &lt;Typography gutterBottom={true} variant={'h6'}>
+                            &lt;span className={'choseBrandsHeader'}>
+                                Диапазон цены:
+                            &lt;/span>
+                                &lt;/Typography>
+
+                                &lt;Col md={12} className={'slider-container'}>
+
+                                   {/* &lt;InputRange
+                                        maxValue={Number(device.MaxPrice)}
+                                        minValue={Number(device.MinPrice)}
+                                        formatLabel={value => ``}
+                                        value={value1}
+                                        onChange={value => {
+                                            console.log('value: ', value)
+                                            // if (value.max - value.min >= (device.MaxPrice - device.MinPrice) / 8) {
+                                            //
+                                            // }
+                                            SetValue1(value)
+                                        }
+                                        }
+
+                                        onChangeComplete={value => console.log(value)}
+                                    />*/}
+
+                                    &lt;Slider
+                                        getAriaLabel={() => 'Minimum distance'}
+                                        value={value1}
+                                        onChange={handleChange1}
+                                        valueLabelDisplay="auto"
+                                        min= {Number(device.MinPrice)}
+                                        max = {Number(device.MaxPrice)}
+                                        disableSwap
+                                    />
+
+
+                                &lt;/Col>
+
+
+                                &lt;Col className={'wrapperInputRangeSlider'} md={12}>
+                                    &lt;Row >
+                                        &lt;Col md={6}>
+                                                &lt;div>Цена от&lt;/div>
+                                                &lt;Input value={value1[0]} defaultValue="Hello world" />
+                                        &lt;/Col>
+
+                                        &lt;Col md={6}>
+
+                                            &lt;div>Цена до&lt;/div>
+                                            &lt;Input  value={value1[1]}defaultValue="Hello world" />
+
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                &lt;/Col>
+
+
+                            &lt;/Row>
+                        &lt;/>
+
+                        }
+
+                        &lt;Row className={'buttonSettingsBlock'}>
+                            &lt;Button className={'buttonSettings'} variant="outlined" size="large" onClick={() => {
+                                approveSettings()
+                                setIsOpenMenu(!isOpenMenu)
+                            }} >
+                                Применить
+                            &lt;/Button>
+
+                            &lt;Transition
+                                in={Boolean(search)}
+                                timeout={{
+                                    enter: 500,
+                                    exit: 500,
+                                }}
+                                exit={false}
+                                mountOnEnter={true}
+                                unmountOnExit={true}
+                            >
+                                {(state) =>  &lt;Button color={'warning'} className={`buttonSettings settingsAppear ${state}`} variant="outlined" size="large" onClick={() => {
+                                    device.cleanSelectedBrands(typeUrl)
+                                    device.returnPriceRangeToInitial()
+                                    device.setCurrentPage(1)
+                                    history.push(`/home/${typeUrl}`)
+                                    setIsOpenMenu(!isOpenMenu)
+                                }} >
+                                    Сбросить
+                                &lt;/Button>}
+                                &lt;/Transition>
+
+                        &lt;/Row>
+
+                    &lt;/div>
+
+                &lt;/div>
+
+                }
+            &lt;/Transition>
+
+
+        &lt;/div>
+    );
+}
+)
+
+export default SettingsBar;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Gallery.html">Gallery</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Slider.html">Slider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#a11yProps">a11yProps</a></li><li><a href="global.html#AddOrderInfoToServer">AddOrderInfoToServer</a></li><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#AdminOrderTable">AdminOrderTable</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#authRoutes">authRoutes</a></li><li><a href="global.html#Basket">Basket</a></li><li><a href="global.html#BasketCard">BasketCard</a></li><li><a href="global.html#ButtonBasket">ButtonBasket</a></li><li><a href="global.html#CakeTable">CakeTable</a></li><li><a href="global.html#CardProduct">CardProduct</a></li><li><a href="global.html#changeOrderStatus">changeOrderStatus</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#codeConfirmation">codeConfirmation</a></li><li><a href="global.html#CreateBrand">CreateBrand</a></li><li><a href="global.html#CreateDeviceContainer">CreateDeviceContainer</a></li><li><a href="global.html#CreateType">CreateType</a></li><li><a href="global.html#DeleteBrand">DeleteBrand</a></li><li><a href="global.html#deleteBrand">deleteBrand</a></li><li><a href="global.html#deleteDevice">deleteDevice</a></li><li><a href="global.html#DeleteType">DeleteType</a></li><li><a href="global.html#deleteType">deleteType</a></li><li><a href="global.html#DeviceItem">DeviceItem</a></li><li><a href="global.html#DeviceList">DeviceList</a></li><li><a href="global.html#DevicePage">DevicePage</a></li><li><a href="global.html#editBrand">editBrand</a></li><li><a href="global.html#editDevice">editDevice</a></li><li><a href="global.html#EditFio">EditFio</a></li><li><a href="global.html#editFio">editFio</a></li><li><a href="global.html#EditGender">EditGender</a></li><li><a href="global.html#editGender">editGender</a></li><li><a href="global.html#editType">editType</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#getAllOrders">getAllOrders</a></li><li><a href="global.html#getDevices">getDevices</a></li><li><a href="global.html#getDevices_24">getDevices_24</a></li><li><a href="global.html#getImageByName">getImageByName</a></li><li><a href="global.html#getInfoAboutUser">getInfoAboutUser</a></li><li><a href="global.html#getOrderItemsUser">getOrderItemsUser</a></li><li><a href="global.html#getTypeBrand">getTypeBrand</a></li><li><a href="global.html#giveDeviceById">giveDeviceById</a></li><li><a href="global.html#giveDeviceServer">giveDeviceServer</a></li><li><a href="global.html#InputDevice">InputDevice</a></li><li><a href="global.html#InputPriceDevice">InputPriceDevice</a></li><li><a href="global.html#InsertedTableCellBody">InsertedTableCellBody</a></li><li><a href="global.html#InsertedTableCellHead">InsertedTableCellHead</a></li><li><a href="global.html#KodFormatCustom">KodFormatCustom</a></li><li><a href="global.html#LoadImageLink">LoadImageLink</a></li><li><a href="global.html#LoadImageLocal">LoadImageLocal</a></li><li><a href="global.html#Lock">Lock</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#MainShop">MainShop</a></li><li><a href="global.html#ModalDevice">ModalDevice</a></li><li><a href="global.html#MultipleSelectChip">MultipleSelectChip</a></li><li><a href="global.html#MyPagination">MyPagination</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NumberFormatCustom">NumberFormatCustom</a></li><li><a href="global.html#postBrand">postBrand</a></li><li><a href="global.html#postType">postType</a></li><li><a href="global.html#PresentationComponentLoadLink">PresentationComponentLoadLink</a></li><li><a href="global.html#publicRoutes">publicRoutes</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#registration">registration</a></li><li><a href="global.html#SettingsBar">SettingsBar</a></li><li><a href="global.html#Shop">Shop</a></li><li><a href="global.html#TableUserOrder">TableUserOrder</a></li><li><a href="global.html#TabPanel">TabPanel</a></li><li><a href="global.html#TaskContainer">TaskContainer</a></li><li><a href="global.html#TaskElem">TaskElem</a></li><li><a href="global.html#TextMaskCustom">TextMaskCustom</a></li><li><a href="global.html#TypeBar">TypeBar</a></li><li><a href="global.html#UnderHeaderMenu">UnderHeaderMenu</a></li><li><a href="global.html#Unlock">Unlock</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPagePaper">UserPagePaper</a></li><li><a href="global.html#wrapElementByDiv">wrapElementByDiv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 16:24:14 GMT+0300 (Москва, стандартное время)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

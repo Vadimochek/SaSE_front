@@ -54,7 +54,11 @@ const style = {
     p: 4,
 };
 
-
+/**
+ * Функция для отрисовки панели продукции
+ * @function
+ * @returns {JSX} Разметка страницы
+ */
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
 
@@ -74,7 +78,12 @@ function TabPanel(props) {
         </div>
     );
 }
-
+/**
+ * Функция для формирования объекта
+ * @function
+ * @param {number} index - index таблицы
+ * @returns {object} Объект с id
+ */
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -82,7 +91,12 @@ function a11yProps(index) {
     };
 }
 
-
+/**
+ * Функция для отрисовки модального окна устройства
+ * @function
+ * @param {object} - необходимые параметры для работы окна
+ * @returns {JSX} Разметка страницы
+ */
 const ModalDevice = ({edit = false, open, setOpen, info, fishingData, isLoading=false }) => {
     const classes = useStyles()
     const handleOpen = () => setOpen(true);
@@ -331,7 +345,12 @@ const ModalDevice = ({edit = false, open, setOpen, info, fishingData, isLoading=
     );
 };
 
-
+/**
+ * Функция для отображения устройства
+ * @function
+ * @param {object} props - Данные устройства
+ * @returns {JSX} - Разметка страницы
+ */
 function InputDevice(props) {
 
     const [field, meta] = useField(props);
@@ -352,6 +371,12 @@ function InputDevice(props) {
     )
 }
 
+/**
+ * Функция для отображения цены устройства
+ * @function
+ * @param {object} data - Данные устройства
+ * @returns {JSX} - Разметка страницы
+ */
 function InputPriceDevice(data) {
     const [field, meta] = useField(data);
 

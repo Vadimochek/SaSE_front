@@ -69,7 +69,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
+/**
+ * Компонента отображения заголовка ячейки
+ * @function
+ * @param {object} - ячейки
+ * @returns {JSX} - Разметка страницы
+ */
 export const InsertedTableCellHead = ({children, ...other}) =>{
     const classes = useStyles()
 
@@ -79,6 +84,13 @@ export const InsertedTableCellHead = ({children, ...other}) =>{
         </TableCell>
     )
 }
+
+/**
+ * Компонента отображения ячейки
+ * @function
+ * @param {object} - данные ячейки
+ * @returns {JSX} - Разметка страницы
+ */
 
 const InsertedTableCellBody = ({children, ...other}) =>{
     const classes = useStyles()
@@ -91,7 +103,12 @@ const InsertedTableCellBody = ({children, ...other}) =>{
 }
 
 
-
+/**
+ * Компонента отображения таблицы
+ * @function
+ * @param {object} - данные таблицы
+ * @returns {JSX} - Разметка страницы
+ */
 const CakeTable = ({isUserTable = false, row}) => {
 
     console.log('totalSum: ', row)

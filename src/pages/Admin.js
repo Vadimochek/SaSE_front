@@ -18,6 +18,8 @@ import DeleteType from "../components/ModalsAdmin/DeleteWindows/DeleteType/Delet
 
 export const createDevice = new CreateDeviceStore()
 
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -29,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * Компонента, которая отрисовывает страницу админа
+ * @function
+ * @returns {JSX} Разметка страницы админа
+ */
 
 const Admin = observer(() => {
 

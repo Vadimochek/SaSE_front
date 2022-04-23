@@ -7,6 +7,12 @@ import './DeleteType.css'
 import {Context} from "../../../../index";
 
 
+/**
+ * Компонента для отображения удаления типа
+ * @function
+ * @param {object} - данные о параметрах типа
+ * @returns {JSX} - Разметка страницы
+ */
 
 export const DeleteType = observer(({show, onHide}) => {
 

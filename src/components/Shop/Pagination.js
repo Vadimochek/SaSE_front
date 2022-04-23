@@ -4,6 +4,11 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 import {useHistory, useParams} from "react-router-dom";
 
+/**
+ * Компонента для отображения пагинации
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const MyPagination = observer(() => {
     const {device} = useContext(Context)
     let history = useHistory()

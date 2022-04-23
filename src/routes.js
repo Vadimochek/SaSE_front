@@ -14,6 +14,12 @@ import Auth from "./pages/Auth";
 import DevicePage from "./pages/DevicePage/DevicePage";
 import UserPage from "./pages/UserPage/UserPage";
 
+
+/**
+ * Объект с компонентами и путями для админа
+ *
+ */
+
 export const authRoutes = [
     {
         path: ADMIN_ROUTE,
@@ -24,6 +30,11 @@ export const authRoutes = [
         Component: UserPage,
     },
 ]
+
+/**
+ * Объект с компонентами и путями для пользователя
+ *
+ */
 
 export const publicRoutes = [
     {

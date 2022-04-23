@@ -22,6 +22,11 @@ const imgMassive = [phoneImg, Tv, Pc, fridge, Washer, stone]
 
 const mainPageStore = new MainPageStore()
 
+/**
+ * Компонента для отображения подвала
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 export const Footer = observer(() => {
 
     useEffect(()=>{
@@ -119,7 +124,11 @@ export const Footer = observer(() => {
 });
 
 
-
+/**
+ * Компонента для отображения главного блока сайта
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 
 const MainShop = observer(() => {
     const classes = MainShopStyles()

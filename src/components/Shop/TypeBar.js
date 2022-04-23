@@ -7,7 +7,11 @@ import {SHOP_ROUTE} from "../../utils/consts";
 import './Shop.css'
 import {Box, Typography} from "@mui/material";
 
-
+/**
+ * Компонента для отображения полоски типов
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const TypeBar = observer(() => {
     const {device} = useContext(Context)
     const location = useLocation();

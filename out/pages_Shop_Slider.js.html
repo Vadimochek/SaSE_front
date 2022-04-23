@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Shop/Slider.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Shop/Slider.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from "react";
+import {Button, Paper} from "@material-ui/core";
+import {BiLeftArrow, BiRightArrow, IoPause, IoPlay, IoPlayCircleSharp} from "react-icons/all";
+import {styled} from "@material-ui/core/styles";
+
+
+function debounce(func, time = 140) {
+
+    let timer;
+
+    return function (event) {
+        clearTimeout(timer);
+        timer = setTimeout(func, time, event)
+    }
+}
+
+
+const ButtonSlider = styled(Button)({
+    background: 'rgba(0,0,0,0.3)',
+    minWidth: '1rem',
+    minHeight: '3rem',
+    borderRadius: '50%',
+    color: 'white',
+    transition: '0.25s',
+    '&amp;:hover': {
+        transform:' scale(1.2)',
+        background: 'rgba(0,0,0,0.4)',
+    }
+})
+/**
+ * Класс, который реализует слайдер на главной странице
+ * @class
+
+ */
+class Slider extends Component {
+
+    constructor(props) {
+        super(props);
+        this.currentSlide = 0
+
+
+        this.state = {
+            arr: [1, 2],
+            activeItem: 1,
+            isPause: false,
+        }
+
+
+        this.resizeGallery = this.resizeGallery.bind(this)
+        this.setParameters = this.setParameters.bind(this)
+        this.setEvents = this.setEvents.bind(this)
+        this.startDrag = this.startDrag.bind(this)
+        this.stopDrag = this.stopDrag.bind(this)
+        this.pointerMove = this.pointerMove.bind(this)
+        this.setStylePosition = this.setStylePosition.bind(this)
+        this.resetStylePosition = this.resetStylePosition.bind(this)
+        this.setStyleTransition = this.setStyleTransition.bind(this)
+        this.resetStyleTransition = this.resetStyleTransition.bind(this)
+        this.getPosition = this.getPosition.bind(this)
+        this.mouseEnter = this.mouseEnter.bind(this)
+        this.mouseLeave = this.mouseLeave.bind(this)
+        this.increase = this.increase.bind(this)
+        this.decrease = this.decrease.bind(this)
+
+        this.switchTimeInterval= this.switchTimeInterval.bind(this)
+
+    }
+
+
+
+    componentDidMount() {
+        this.setParameters()
+        // this.setParametersTimeInterval()
+        this.setEvents()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        const prevDevices = prevProps?.devices
+        const currentDevices = this.props?.devices
+
+
+        if(prevDevices !== currentDevices){
+            this.setParameters()
+        }
+    }
+
+    componentWillUnmount() {
+
+        clearInterval(this.updateSliderIntervalId)
+        this.removeEvents()
+    }
+
+    setParametersTimeInterval() {
+        this.updateSliderIntervalId = setInterval(this.setParameters,2000 )
+    }
+
+    switchTimeInterval() {
+        if (this.currentSlide &lt; this.numberItemsGallery - 1) {
+            this.currentSlide = this.currentSlide + 1;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        } else {
+            this.currentSlide = 0;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        }
+    }
+
+    setParameters() {
+        this.containerNode = document.getElementById(`gallery_${this.props.id}`)
+        this.btnSlider_prev = document.querySelector( `.btnSlider_prev_${this.props.id}>button`)
+        this.btnSlider_next = document.querySelector(`.btnSlider_next_${this.props.id}>button`)
+        this.lineNode = this.containerNode.querySelector(`.gallery-line_${this.props.id}`)
+        this.numberItemsGallery = this.lineNode.childElementCount;
+
+
+        const coordsContainer = this.containerNode.getBoundingClientRect()
+        this.width = coordsContainer.width;
+        this.lineNode.style.width = this.numberItemsGallery * this.width + 'px'
+        this.arr = []
+        for (let i = 0; i &lt; this.numberItemsGallery; i++) {
+            this.arr.push(i)
+        }
+
+        this.setState({
+            arr: this.arr
+        })
+
+        this.lineNode.childNodes.forEach(slideNodes => {
+            slideNodes.style.width = this.width + 'px'
+        });
+        this.x = this.getPosition()
+        this.resetStylePosition()
+    }
+
+    getPosition() {
+        return -this.currentSlide * this.width
+    }
+
+    resizeGallery() {
+        console.log('galleryResizing')
+        this.setParameters();
+    }
+
+    setEvents() {
+        this.debounceResizeGalary = debounce(this.resizeGallery)
+        window.addEventListener('resize', this.debounceResizeGalary)
+        this.containerNode.addEventListener('mouseenter', this.mouseEnter)
+        this.containerNode.addEventListener('mouseleave', this.mouseLeave)
+
+
+        this.btnSlider_prev.addEventListener('click', (e) => {
+            this.decrease()
+        })
+
+        this.btnSlider_next.addEventListener('click', (e) => {
+            this.increase()
+        })
+        this.setStyleTransition()
+        this.intervalId = setInterval(this.switchTimeInterval, 5000)
+    }
+
+    removeEvents() {
+        window.removeEventListener('resize', this.debounceResizeGalary)
+        this.containerNode.removeEventListener('mouseenter', this.mouseEnter)
+        this.containerNode.removeEventListener('mouseleave', this.mouseLeave)
+    }
+
+    mouseEnter() {
+        // console.log('mouseenter')
+        this.setState({isPause: true})
+        clearInterval(this.intervalId)
+        this.isLeave = false
+        window.addEventListener('pointerdown', this.startDrag)
+        window.addEventListener('pointerup', this.stopDrag)
+    }
+
+    mouseLeave() {
+        // console.log('mouseleave')
+
+        this.isLeave = true
+        if (!this.isStartDrag) {
+            window.removeEventListener('pointerdown', this.startDrag)
+            window.removeEventListener('pointerup', this.stopDrag)
+            this.setState({isPause: false})
+            this.intervalId = setInterval(this.switchTimeInterval, 5000)
+        }
+    }
+
+
+
+    startDrag(e) {
+        e.preventDefault()
+        this.isStartDrag = true
+        this.resetStyleTransition()
+        this.dragShift = 0
+        this.clickX = e.pageX
+        window.addEventListener('pointermove', this.pointerMove)
+    }
+
+    pointerMove(e) {
+        // console.log('pointer move worked')
+        this.dragX = e.pageX;
+        this.dragShift = this.dragX - this.clickX;
+        this.setStylePosition()
+    }
+
+    stopDrag() {
+        window.removeEventListener('pointermove', this.pointerMove)
+        if (
+            this.dragShift > this.width / 4 &amp;&amp;
+            this.currentSlide > 0
+        ) {
+            console.log('width: ', this.width)
+            this.currentSlide = this.currentSlide - 1;
+            this.x = this.getPosition()
+
+        }
+
+        if (
+            this.dragShift &lt; -this.width / 4 &amp;&amp;
+            this.currentSlide &lt; this.numberItemsGallery - 1
+        ) {
+            console.log('width: ', this.width)
+            this.currentSlide = this.currentSlide + 1;
+            this.x = this.getPosition()
+        }
+
+        this.setStyleTransition()
+        this.resetStylePosition()
+        this.isStartDrag = false
+        if (this.isLeave) {
+            window.removeEventListener('pointerdown', this.startDrag)
+            window.removeEventListener('pointerup', this.stopDrag)
+            this.setState({isPause: false})
+            this.intervalId = setInterval(this.switchTimeInterval, 5000)
+        }
+        window.removeEventListener('pointermove', this.pointerMove)
+    }
+
+    setStylePosition() {
+        this.lineNode.style.transform = `translate3d(${this.x + this.dragShift}px, 0, 0)`
+    }
+
+    resetStylePosition() {
+        this.lineNode.style.transform = `translate3d(${this.x}px, 0, 0)`
+        this.setState({activeItem: this.currentSlide})
+    }
+
+    setStyleTransition() {
+        this.lineNode.style.transition = `all 1s ease 0s`
+    }
+
+    resetStyleTransition() {
+        this.lineNode.style.transition = `all 0s ease 0s`
+    }
+
+    increase() {
+
+        if (this.currentSlide &lt; this.numberItemsGallery - 1) {
+            this.currentSlide = this.currentSlide + 1;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        } else {
+            this.currentSlide = 0;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        }
+
+    }
+
+    decrease() {
+
+        if (this.currentSlide > 0) {
+            this.currentSlide = this.currentSlide - 1;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        } else {
+            this.currentSlide = this.numberItemsGallery - 1;
+            this.x = this.getPosition()
+            this.resetStylePosition()
+        }
+    }
+
+    dotTurn(id) {
+        this.currentSlide = id
+        this.x = this.getPosition()
+        this.resetStylePosition()
+    }
+
+
+    render() {
+
+        console.log('this.numberItemsGallery ', this.state.arr)
+        return (
+            &lt;div ref={this.ref} id={`gallery_${this.props.id}`} className={'gallery'}>
+
+
+                &lt;div className={'slideInsides'}>
+                    &lt;div className={'btnSlider btnSlider_prev ' + `btnSlider_prev_${this.props.id}`}>
+                        &lt;ButtonSlider variant="outlined">
+                            &lt;BiLeftArrow/>
+                        &lt;/ButtonSlider>
+                    &lt;/div>
+
+                    &lt;div className={'gallery-line '+`gallery-line_${this.props.id}` }>
+                        {this.props.render()}
+                        {/*&lt;div className="slide slide-3">*/}
+                        {/*    &lt;img src="https://images.wbstatic.net/bners1/big_holodilnik_25_08.jpg" alt=""*/}
+                        {/*         className="slide_slideImage__29MbQ"/>*/}
+                        {/*&lt;/div>*/}
+                        {/*&lt;div className="slide slide-1">*/}
+                        {/*    &lt;img src="https://images.wbstatic.net/bners1/big_school_25_08.jpg" alt=""*/}
+                        {/*         className="slide_slideImage__29MbQ"/>*/}
+                        {/*&lt;/div>*/}
+                        {/*&lt;div className="slide slide-2">*/}
+                        {/*    &lt;img src="https://images.wbstatic.net/bners1/pull_666.jpg" alt=""*/}
+                        {/*         className="slide_slideImage__29MbQ"/>*/}
+                        {/*&lt;/div>*/}
+                        {/*&lt;div className="slide slide-4">*/}
+                        {/*    &lt;img src="https://images.wbstatic.net/bners1/big_school_25_08.jpg" alt=""*/}
+                        {/*         className="slide_slideImage__29MbQ"/>*/}
+                        {/*&lt;/div>*/}
+                    &lt;/div>
+
+                    &lt;div className={'btnSlider btnSlider_next '+ `btnSlider_next_${this.props.id}`}>
+                        &lt;ButtonSlider variant="outlined">
+                            &lt;BiRightArrow/>
+                        &lt;/ButtonSlider>
+                    &lt;/div>
+
+                    &lt;div className={'dotsMenu'}>
+                        {this.state.arr &amp;&amp; this.state.arr.map((el) =>
+                            &lt;div onClick={() => {
+                                this.dotTurn(el);
+                                ;
+                                this.setState({activeItem: el})
+                            }} key={el} className={'wrapperDotItem'}>
+                                &lt;div style={this.state.activeItem === el ? {backgroundColor: '#007bff'} : {}}
+                                     className={'dotItem'}>
+
+                                &lt;/div>
+                            &lt;/div>)}
+
+                        &lt;div className={'wrapperDotItem'}>
+                            {this.state.isPause ? &lt;IoPlay />:
+                                &lt;IoPause />}
+
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+
+
+
+            &lt;/div>
+        );
+    }
+}
+
+
+export default Slider</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Gallery.html">Gallery</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Slider.html">Slider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#a11yProps">a11yProps</a></li><li><a href="global.html#AddOrderInfoToServer">AddOrderInfoToServer</a></li><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#AdminOrderTable">AdminOrderTable</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#authRoutes">authRoutes</a></li><li><a href="global.html#Basket">Basket</a></li><li><a href="global.html#BasketCard">BasketCard</a></li><li><a href="global.html#ButtonBasket">ButtonBasket</a></li><li><a href="global.html#CakeTable">CakeTable</a></li><li><a href="global.html#CardProduct">CardProduct</a></li><li><a href="global.html#changeOrderStatus">changeOrderStatus</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#codeConfirmation">codeConfirmation</a></li><li><a href="global.html#CreateBrand">CreateBrand</a></li><li><a href="global.html#CreateDeviceContainer">CreateDeviceContainer</a></li><li><a href="global.html#CreateType">CreateType</a></li><li><a href="global.html#DeleteBrand">DeleteBrand</a></li><li><a href="global.html#deleteBrand">deleteBrand</a></li><li><a href="global.html#deleteDevice">deleteDevice</a></li><li><a href="global.html#DeleteType">DeleteType</a></li><li><a href="global.html#deleteType">deleteType</a></li><li><a href="global.html#DeviceItem">DeviceItem</a></li><li><a href="global.html#DeviceList">DeviceList</a></li><li><a href="global.html#DevicePage">DevicePage</a></li><li><a href="global.html#editBrand">editBrand</a></li><li><a href="global.html#editDevice">editDevice</a></li><li><a href="global.html#EditFio">EditFio</a></li><li><a href="global.html#editFio">editFio</a></li><li><a href="global.html#EditGender">EditGender</a></li><li><a href="global.html#editGender">editGender</a></li><li><a href="global.html#editType">editType</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#getAllOrders">getAllOrders</a></li><li><a href="global.html#getDevices">getDevices</a></li><li><a href="global.html#getDevices_24">getDevices_24</a></li><li><a href="global.html#getImageByName">getImageByName</a></li><li><a href="global.html#getInfoAboutUser">getInfoAboutUser</a></li><li><a href="global.html#getOrderItemsUser">getOrderItemsUser</a></li><li><a href="global.html#getTypeBrand">getTypeBrand</a></li><li><a href="global.html#giveDeviceById">giveDeviceById</a></li><li><a href="global.html#giveDeviceServer">giveDeviceServer</a></li><li><a href="global.html#InputDevice">InputDevice</a></li><li><a href="global.html#InputPriceDevice">InputPriceDevice</a></li><li><a href="global.html#InsertedTableCellBody">InsertedTableCellBody</a></li><li><a href="global.html#InsertedTableCellHead">InsertedTableCellHead</a></li><li><a href="global.html#KodFormatCustom">KodFormatCustom</a></li><li><a href="global.html#LoadImageLink">LoadImageLink</a></li><li><a href="global.html#LoadImageLocal">LoadImageLocal</a></li><li><a href="global.html#Lock">Lock</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#MainShop">MainShop</a></li><li><a href="global.html#ModalDevice">ModalDevice</a></li><li><a href="global.html#MultipleSelectChip">MultipleSelectChip</a></li><li><a href="global.html#MyPagination">MyPagination</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NumberFormatCustom">NumberFormatCustom</a></li><li><a href="global.html#postBrand">postBrand</a></li><li><a href="global.html#postType">postType</a></li><li><a href="global.html#PresentationComponentLoadLink">PresentationComponentLoadLink</a></li><li><a href="global.html#publicRoutes">publicRoutes</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#registration">registration</a></li><li><a href="global.html#SettingsBar">SettingsBar</a></li><li><a href="global.html#Shop">Shop</a></li><li><a href="global.html#TableUserOrder">TableUserOrder</a></li><li><a href="global.html#TabPanel">TabPanel</a></li><li><a href="global.html#TaskContainer">TaskContainer</a></li><li><a href="global.html#TaskElem">TaskElem</a></li><li><a href="global.html#TextMaskCustom">TextMaskCustom</a></li><li><a href="global.html#TypeBar">TypeBar</a></li><li><a href="global.html#UnderHeaderMenu">UnderHeaderMenu</a></li><li><a href="global.html#Unlock">Unlock</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPagePaper">UserPagePaper</a></li><li><a href="global.html#wrapElementByDiv">wrapElementByDiv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 16:24:14 GMT+0300 (Москва, стандартное время)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

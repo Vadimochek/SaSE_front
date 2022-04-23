@@ -17,6 +17,12 @@ const useStyles = makeStyles((theme) => ({
         }, // a nested style rule
     })
 );
+/**
+ * Компонента для отображения таблицы заказов
+ * @function
+ * @param {object} - данные о заказах
+ * @returns {JSX} - Разметка страницы
+ */
 
 const TableUserOrder = observer(({row, activeOrders}) => {
     const classes = useStyles()

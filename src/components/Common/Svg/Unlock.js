@@ -1,5 +1,10 @@
 import React from 'react';
-
+/**
+ * Компонента отображения разблокировки
+ * @function
+ * @param {object} props - данные разблокировки
+ * @returns {JSX} - Разметка страницы
+ */
 const Unlock = (props) => {
     return (
 

@@ -21,6 +21,7 @@ import MaskedInput from "react-text-mask/dist/reactTextMask";
 import NumberFormat from "react-number-format";
 
 
+
 const useStyles = makeStyles((theme) => ({
 
     container: {
@@ -87,6 +88,12 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+/**
+ * Функция-маска для текста
+ * @function
+ * @param {object} props - текст
+ * @returns {JSX} Разметка маски
+ */
 function TextMaskCustom(props) {
     const {inputRef, ...other} = props;
     return (
@@ -107,7 +114,12 @@ function TextMaskCustom(props) {
     );
 }
 
-
+/**
+ * Функция для форматирования номера
+ * @function
+ * @param {object} props - Данные о номере
+ * @returns {JSX} Телефонная компонента
+ */
 function NumberFormatCustom(props) {
     const {inputRef, ...other} = props;
 
@@ -120,7 +132,12 @@ function NumberFormatCustom(props) {
         />
     );
 }
-
+/**
+ * Функция для форматирования кода
+ * @function
+ * @param {object} props - Данные о коде
+ * @returns {JSX} Телефонная компонента
+ */
 function KodFormatCustom(props) {
     const {inputRef, ...other} = props;
 
@@ -134,6 +151,11 @@ function KodFormatCustom(props) {
     );
 }
 
+/**
+ * Компонента приложения, где происходит авторизация.
+ * @function
+ * @returns {JSX} Основная разметка страницы
+ */
 
 const Auth = observer(() => {
     const location = useLocation()

@@ -30,7 +30,12 @@ const useStyles = makeStyles((theme) => ({
 );
 
 
-
+/**
+ * Компонента отображения таблицы заказов
+ * @function
+ * @param {object} - данные таблицы
+ * @returns {JSX} - Разметка страницы
+ */
 const AdminOrderTable = observer(() => {
     const classes = useStyles()
     const {taskInstance, user} = useContext(Context)

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ModalsAdmin/CreateDevice/CreateDevice.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ModalsAdmin/CreateDevice/CreateDevice.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {createContext, useContext, useEffect, useState} from 'react';
+import {Button, Col, Dropdown, Form, Image, Modal, Row} from "react-bootstrap";
+import {Context, taskInstance, user} from "../../../index";
+import {observer} from "mobx-react-lite";
+import Dropdowns from "./ChildComponentDevice/Dropdowns.jsx";
+import NameAndPriceInput from "./ChildComponentDevice/NameAndPriceInput.jsx";
+import LoadImage from "./ChildComponentDevice/LoadImage/LoadImage";
+
+
+/**
+ * Компонента, создающая контейнер для устройства
+ * @function
+ * @param {object} - параметры для создания контейнера
+ * @returns {JSX} - Разметка страницы
+ */
+const CreateDeviceContainer = observer(({show, onHide, createDevice}) => {
+    const {device, user, taskInstance} = useContext(Context)
+    const [info, setInfo] = useState([])
+
+    const addInfo = () => {
+        setInfo([...info, {title: '', description: '', number: Date.now(),}])
+    }
+
+    const removeInfo = (number) => {
+        setInfo(info.filter(i => i.number !== number))
+    }
+
+
+    // console.log(createDevice.Price)
+    useEffect(()=>{
+        console.log(createDevice.Brand)
+    }, )
+
+    return (
+            &lt;div>
+                &lt;Modal
+                    show={show}
+                    size="lg"
+                    onHide={onHide}
+                    centered
+                >
+                    &lt;Modal.Header closeButton>
+                        &lt;Modal.Title id="contained-modal-title-vcenter">
+                            Добавить новое устройство
+                        &lt;/Modal.Title>
+                    &lt;/Modal.Header>
+                    &lt;Modal.Body>
+                        &lt;Form>
+
+                            &lt;Dropdowns createDevice={createDevice}/>
+
+                            &lt;NameAndPriceInput createDevice={createDevice}/>
+
+                            &lt;LoadImage createDevice={createDevice}/>
+
+
+                            &lt;Button onClick={() => addInfo()}
+                                    variant={'outline-dark'}
+                            >
+                                Добавить новое свойство&lt;/Button>
+
+                            {
+                                info.map(i =>
+                                    &lt;Row className={"mt-2"} key={i.number}>
+                                        &lt;Col md={4}>
+                                            &lt;Form.Control
+                                                value={i.title}
+                                                onChange={(e) =>
+                                                    setInfo(info.map(el => (el.number === i.number ? {
+                                                        ...el,
+                                                        title: e.target.value
+                                                    } : {...el})))
+                                                }
+
+                                                placeholder={'Введите название характеристики'}
+                                            />
+                                        &lt;/Col>
+                                        &lt;Col md={4}>
+                                            &lt;Form.Control
+                                                value={i.description}
+                                                onChange={(e) =>
+                                                    setInfo(info.map(el => (el.number === i.number ? {
+                                                        ...el,
+                                                        description: e.target.value
+                                                    } : {...el})))
+                                                }
+                                                placeholder={'Введите описание характеристики'}
+                                            />
+                                        &lt;/Col>
+
+                                        &lt;Col md={4}>
+                                            &lt;Button onClick={() => removeInfo(i.number)}
+                                                    variant={'outline-danger'}>Удалить&lt;/Button>
+                                        &lt;/Col>
+
+                                    &lt;/Row>
+                                )
+                            }
+                        &lt;/Form>
+
+
+                    &lt;/Modal.Body>
+
+                    &lt;Modal.Footer>
+                        &lt;Button variant={'outline-danger'} onClick={onHide}>Закрыть&lt;/Button>
+                        &lt;Button variant={'outline-success'} onClick={(event) => {
+                            let characteristic = info.filter(el => el.title &amp;&amp; el.description).map(el=>({title: el.title, description: el.description }))
+                            if(createDevice.IsGetReadyToRequest()){
+                                 createDevice.giveSomeDataToServer(characteristic, taskInstance)
+                                     .then(()=>{
+
+                                     })
+                                     .catch((response)=>{
+                                         if(response.status === 468) {
+
+                                             if (response.data.message !== 'Maximum upload size exceeded; nested exception is java.lang.IllegalStateException: org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException: The field imgFile exceeds its maximum permitted size of 1048576 bytes.') {
+
+                                                 user.checkRefresh().then(()=>{
+
+                                                     event.target.click()
+                                                 })
+                                             }
+                                         }
+
+                                         if(response.status === 403){
+                                             user.Out()
+                                             taskInstance.createTask('Регистрируйся разбойник, что ты тут делаешь', 'Warning' )
+                                         }
+
+
+                                     })
+                            } else {
+                                taskInstance.createTask('Заполненны не все данные', 'Warning')
+                            }
+                            // createDevice.deleteAll()
+                            // setInfo([])
+
+
+                        }}>Добавить&lt;/Button>
+                    &lt;/Modal.Footer>
+                &lt;/Modal>
+            &lt;/div>
+    );
+});
+
+
+
+
+export default CreateDeviceContainer;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Gallery.html">Gallery</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Slider.html">Slider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#a11yProps">a11yProps</a></li><li><a href="global.html#AddOrderInfoToServer">AddOrderInfoToServer</a></li><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#AdminOrderTable">AdminOrderTable</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#authRoutes">authRoutes</a></li><li><a href="global.html#Basket">Basket</a></li><li><a href="global.html#BasketCard">BasketCard</a></li><li><a href="global.html#ButtonBasket">ButtonBasket</a></li><li><a href="global.html#CakeTable">CakeTable</a></li><li><a href="global.html#CardProduct">CardProduct</a></li><li><a href="global.html#changeOrderStatus">changeOrderStatus</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#codeConfirmation">codeConfirmation</a></li><li><a href="global.html#CreateBrand">CreateBrand</a></li><li><a href="global.html#CreateDeviceContainer">CreateDeviceContainer</a></li><li><a href="global.html#CreateType">CreateType</a></li><li><a href="global.html#DeleteBrand">DeleteBrand</a></li><li><a href="global.html#deleteBrand">deleteBrand</a></li><li><a href="global.html#deleteDevice">deleteDevice</a></li><li><a href="global.html#DeleteType">DeleteType</a></li><li><a href="global.html#deleteType">deleteType</a></li><li><a href="global.html#DeviceItem">DeviceItem</a></li><li><a href="global.html#DeviceList">DeviceList</a></li><li><a href="global.html#DevicePage">DevicePage</a></li><li><a href="global.html#editBrand">editBrand</a></li><li><a href="global.html#editDevice">editDevice</a></li><li><a href="global.html#EditFio">EditFio</a></li><li><a href="global.html#editFio">editFio</a></li><li><a href="global.html#EditGender">EditGender</a></li><li><a href="global.html#editGender">editGender</a></li><li><a href="global.html#editType">editType</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#getAllOrders">getAllOrders</a></li><li><a href="global.html#getDevices">getDevices</a></li><li><a href="global.html#getDevices_24">getDevices_24</a></li><li><a href="global.html#getImageByName">getImageByName</a></li><li><a href="global.html#getInfoAboutUser">getInfoAboutUser</a></li><li><a href="global.html#getOrderItemsUser">getOrderItemsUser</a></li><li><a href="global.html#getTypeBrand">getTypeBrand</a></li><li><a href="global.html#giveDeviceById">giveDeviceById</a></li><li><a href="global.html#giveDeviceServer">giveDeviceServer</a></li><li><a href="global.html#InputDevice">InputDevice</a></li><li><a href="global.html#InputPriceDevice">InputPriceDevice</a></li><li><a href="global.html#InsertedTableCellBody">InsertedTableCellBody</a></li><li><a href="global.html#InsertedTableCellHead">InsertedTableCellHead</a></li><li><a href="global.html#KodFormatCustom">KodFormatCustom</a></li><li><a href="global.html#LoadImageLink">LoadImageLink</a></li><li><a href="global.html#LoadImageLocal">LoadImageLocal</a></li><li><a href="global.html#Lock">Lock</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#MainShop">MainShop</a></li><li><a href="global.html#ModalDevice">ModalDevice</a></li><li><a href="global.html#MultipleSelectChip">MultipleSelectChip</a></li><li><a href="global.html#MyPagination">MyPagination</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NumberFormatCustom">NumberFormatCustom</a></li><li><a href="global.html#postBrand">postBrand</a></li><li><a href="global.html#postType">postType</a></li><li><a href="global.html#PresentationComponentLoadLink">PresentationComponentLoadLink</a></li><li><a href="global.html#publicRoutes">publicRoutes</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#registration">registration</a></li><li><a href="global.html#SettingsBar">SettingsBar</a></li><li><a href="global.html#Shop">Shop</a></li><li><a href="global.html#TableUserOrder">TableUserOrder</a></li><li><a href="global.html#TabPanel">TabPanel</a></li><li><a href="global.html#TaskContainer">TaskContainer</a></li><li><a href="global.html#TaskElem">TaskElem</a></li><li><a href="global.html#TextMaskCustom">TextMaskCustom</a></li><li><a href="global.html#TypeBar">TypeBar</a></li><li><a href="global.html#UnderHeaderMenu">UnderHeaderMenu</a></li><li><a href="global.html#Unlock">Unlock</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPagePaper">UserPagePaper</a></li><li><a href="global.html#wrapElementByDiv">wrapElementByDiv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 16:24:14 GMT+0300 (Москва, стандартное время)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

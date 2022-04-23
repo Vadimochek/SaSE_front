@@ -3,6 +3,12 @@ import {Button, Dropdown, Form, Modal} from "react-bootstrap";
 import {getTypeBrand, postBrand} from "../../http/UserApi";
 import {Context} from "../../index";
 
+/**
+ * Компонента для отображения создания бренда
+ * @function
+ * @param {object} - данные о параметрах бренда
+ * @returns {JSX} - Разметка страницы
+ */
 const CreateBrand = ({show, onHide}) => {
 
 

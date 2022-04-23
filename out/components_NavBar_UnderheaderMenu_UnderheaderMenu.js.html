@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/NavBar/UnderheaderMenu/UnderheaderMenu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/NavBar/UnderheaderMenu/UnderheaderMenu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useEffect, useState} from 'react';
+import {
+    Button,
+    Checkbox,
+    Divider,
+    List,
+    ListItem,
+    ListItemText,
+    makeStyles,
+    Paper,
+    Typography
+} from "@material-ui/core";
+
+
+import MenuStore from "../../../store/menuStore";
+import {observer} from "mobx-react-lite";
+import {Link} from "react-router-dom";
+
+
+export const useStylesPopupCategory = makeStyles((theme) => ({
+
+        ContainerCategory: {
+            color: theme.palette.text.primary,
+            padding: '32px 16px',
+            position: 'absolute',
+            width: '100%',
+            top: '54px',
+            right: '0px',
+            backgroundColor: theme.palette.background.paper,
+        },
+
+        content: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+        },
+
+        content__listItem: {
+            maxHight: '48px',
+            cursor: 'pointer',
+        },
+
+        content__listItem_active: {
+            backgroundColor: 'rgba(0,0,0,.3)',
+        },
+
+        content__list: {
+
+        },
+
+
+        content_left: {
+            maxHight: '288px',
+            width: '254px'
+        },
+
+        content_right: {
+            width: '100%',
+        },
+
+        itemBrands: {
+            width: '95%',
+            margin: '30px auto 0px',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            flexWrap : 'wrap',
+
+        },
+        label: {
+            marginRight: '15px',
+            marginBottom: '20px',
+            cursor: 'pointer',
+        },
+        checkboxWrap: {
+            width: '171px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            cursor: 'pointer',
+
+}
+
+
+    })
+)
+
+
+export const menu = new MenuStore()
+
+/**
+ * Компонента для отображения вспомогательного меню
+ * @function
+ * @param {object} - конфигурационные параметры
+ * @returns {JSX} - Разметка страницы
+ */
+
+const UnderHeaderMenu = observer(({handleLock}) => {
+    const classes = useStylesPopupCategory()
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [isOutCursor, setIsOutCursor] = useState(false)
+    const menuNode = React.createRef();
+    function handleClickItemList(ind){
+        setSelectedIndex(ind)
+    }
+
+
+    useEffect(()=>{
+        menu.setBrandInType()
+    },[])
+
+    useEffect(()=>{
+
+
+
+        function clickHolst(){
+
+            if(isOutCursor){
+                handleLock(true)
+            }
+        }
+
+
+        document.addEventListener('pointerdown', clickHolst)
+
+
+        return ()=>{
+            document.removeEventListener('pointerdown', clickHolst)
+        }
+    }, [isOutCursor])
+
+    useEffect(()=>{
+        console.log(isOutCursor)
+    }, [isOutCursor])
+
+    function toggleCheckedStatus(id) {
+
+        return undefined;
+    }
+
+    return (
+        &lt;Paper onMouseEnter={()=>{console.log(isOutCursor); setIsOutCursor(false)}} onMouseLeave={()=>{console.log(isOutCursor); setIsOutCursor(true)}}ref={menuNode} className={classes.ContainerCategory}>
+            &lt;div className={classes.content}>
+               {/* &lt;div className={classes.content_left}>
+
+                    &lt;List component="nav" aria-label="secondary mailbox folders">
+
+                        {menu.BrandInType.map((el,index, arr)=>
+                            &lt;React.Fragment key={el.id}>
+
+
+
+                                    &lt;ListItem
+                                        onClick={()=>handleClickItemList(index)}
+                                        className={selectedIndex===index ? classes.content__listItem_active + ' ' + classes.content__listItem: classes.content__listItem}>
+                                        &lt;ListItemText primary={el.name}/>
+                                    &lt;/ListItem>
+
+
+                                {index !== arr.length-1 &amp;&amp; &lt;Divider />}
+                            &lt;/React.Fragment>
+
+                        )}
+                    &lt;/List>
+
+                    &lt;div>
+                        &lt;Button variant="outlined">Применить&lt;/Button>
+                        &lt;Button variant="outlined">Сбросить фильтры&lt;/Button>
+                    &lt;/div>
+
+
+                &lt;/div>*/}
+
+
+                &lt;div className={classes.content_right}>
+                    &lt;Typography variant="h4">
+                        Выбрать Категорию
+                    &lt;/Typography>
+                    &lt;Divider />
+
+                    &lt;div className={classes.itemBrands}>
+
+                        {menu.BrandInType.map((el,i)=>
+                                    &lt;Link onClick={()=>{handleLock(true)}} key={el.name} to={'/home/' + el.name} className={classes.checkboxWrap}>
+                                        &lt;Typography variant={'h6'}>
+                                            {el.name}
+                                        &lt;/Typography>
+                                        &lt;Divider />
+                                    &lt;/Link>
+
+
+                            )}
+
+                    &lt;/div>
+
+
+
+                &lt;/div>
+            &lt;/div>
+        &lt;/Paper>
+    );
+});
+
+export default UnderHeaderMenu;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Gallery.html">Gallery</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Slider.html">Slider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#a11yProps">a11yProps</a></li><li><a href="global.html#AddOrderInfoToServer">AddOrderInfoToServer</a></li><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#AdminOrderTable">AdminOrderTable</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#authRoutes">authRoutes</a></li><li><a href="global.html#Basket">Basket</a></li><li><a href="global.html#BasketCard">BasketCard</a></li><li><a href="global.html#ButtonBasket">ButtonBasket</a></li><li><a href="global.html#CakeTable">CakeTable</a></li><li><a href="global.html#CardProduct">CardProduct</a></li><li><a href="global.html#changeOrderStatus">changeOrderStatus</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#codeConfirmation">codeConfirmation</a></li><li><a href="global.html#CreateBrand">CreateBrand</a></li><li><a href="global.html#CreateDeviceContainer">CreateDeviceContainer</a></li><li><a href="global.html#CreateType">CreateType</a></li><li><a href="global.html#DeleteBrand">DeleteBrand</a></li><li><a href="global.html#deleteBrand">deleteBrand</a></li><li><a href="global.html#deleteDevice">deleteDevice</a></li><li><a href="global.html#DeleteType">DeleteType</a></li><li><a href="global.html#deleteType">deleteType</a></li><li><a href="global.html#DeviceItem">DeviceItem</a></li><li><a href="global.html#DeviceList">DeviceList</a></li><li><a href="global.html#DevicePage">DevicePage</a></li><li><a href="global.html#editBrand">editBrand</a></li><li><a href="global.html#editDevice">editDevice</a></li><li><a href="global.html#EditFio">EditFio</a></li><li><a href="global.html#editFio">editFio</a></li><li><a href="global.html#EditGender">EditGender</a></li><li><a href="global.html#editGender">editGender</a></li><li><a href="global.html#editType">editType</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#getAllOrders">getAllOrders</a></li><li><a href="global.html#getDevices">getDevices</a></li><li><a href="global.html#getDevices_24">getDevices_24</a></li><li><a href="global.html#getImageByName">getImageByName</a></li><li><a href="global.html#getInfoAboutUser">getInfoAboutUser</a></li><li><a href="global.html#getOrderItemsUser">getOrderItemsUser</a></li><li><a href="global.html#getTypeBrand">getTypeBrand</a></li><li><a href="global.html#giveDeviceById">giveDeviceById</a></li><li><a href="global.html#giveDeviceServer">giveDeviceServer</a></li><li><a href="global.html#InputDevice">InputDevice</a></li><li><a href="global.html#InputPriceDevice">InputPriceDevice</a></li><li><a href="global.html#InsertedTableCellBody">InsertedTableCellBody</a></li><li><a href="global.html#InsertedTableCellHead">InsertedTableCellHead</a></li><li><a href="global.html#KodFormatCustom">KodFormatCustom</a></li><li><a href="global.html#LoadImageLink">LoadImageLink</a></li><li><a href="global.html#LoadImageLocal">LoadImageLocal</a></li><li><a href="global.html#Lock">Lock</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#MainShop">MainShop</a></li><li><a href="global.html#ModalDevice">ModalDevice</a></li><li><a href="global.html#MultipleSelectChip">MultipleSelectChip</a></li><li><a href="global.html#MyPagination">MyPagination</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NumberFormatCustom">NumberFormatCustom</a></li><li><a href="global.html#postBrand">postBrand</a></li><li><a href="global.html#postType">postType</a></li><li><a href="global.html#PresentationComponentLoadLink">PresentationComponentLoadLink</a></li><li><a href="global.html#publicRoutes">publicRoutes</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#registration">registration</a></li><li><a href="global.html#SettingsBar">SettingsBar</a></li><li><a href="global.html#Shop">Shop</a></li><li><a href="global.html#TableUserOrder">TableUserOrder</a></li><li><a href="global.html#TabPanel">TabPanel</a></li><li><a href="global.html#TaskContainer">TaskContainer</a></li><li><a href="global.html#TaskElem">TaskElem</a></li><li><a href="global.html#TextMaskCustom">TextMaskCustom</a></li><li><a href="global.html#TypeBar">TypeBar</a></li><li><a href="global.html#UnderHeaderMenu">UnderHeaderMenu</a></li><li><a href="global.html#Unlock">Unlock</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPagePaper">UserPagePaper</a></li><li><a href="global.html#wrapElementByDiv">wrapElementByDiv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 16:24:14 GMT+0300 (Москва, стандартное время)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

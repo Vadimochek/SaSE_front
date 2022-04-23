@@ -8,6 +8,11 @@ import {AiOutlineCloseCircle, AiOutlineCloseSquare, BiMinus, BiPlus, BsTrash, Gr
 import './BaskerCard.css'
 import {useHistory} from "react-router-dom";
 
+/**
+ * Компонента отображения пункта корзины
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const BasketCard = observer(({id, count}) => {
 
     const {basket} = useContext(Context)

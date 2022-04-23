@@ -9,6 +9,13 @@ import {BiDotsVertical, BsDot, BsThreeDotsVertical, GoPrimitiveDot} from "react-
 import {Link, useHistory} from "react-router-dom";
 import {Typography} from "@material-ui/core";
 
+/**
+ * Компонента приложения, где происходит рендер страницы корзины
+ * @function
+ * @returns {JSX} Основная разметка страницы
+ */
+
+
 const Basket = observer(() => {
     const history = useHistory()
     const {basket, user, taskInstance} = useContext(Context)

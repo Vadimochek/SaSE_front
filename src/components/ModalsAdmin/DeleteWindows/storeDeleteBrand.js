@@ -6,6 +6,10 @@ import {editBrand, editType} from "../../../http/EditApi";
 
 
 
+/**
+ * Класс-хранилище для удаленных брендов
+ * @class
+ */
 
 export default class StoreDeleteBrand {
 

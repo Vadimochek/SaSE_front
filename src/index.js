@@ -12,6 +12,8 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 export const Context = createContext(null)
 console.log(process.env.REACT_APP_API_URL)
 
+
+
 export const user = new UserStore()
 export const device = new DeviceStore()
 export const taskInstance = new TaskStore()

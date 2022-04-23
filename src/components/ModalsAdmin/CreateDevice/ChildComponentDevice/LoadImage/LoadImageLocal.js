@@ -4,6 +4,12 @@ import {Button, Form} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../../../../index";
 
+/**
+ * Компонента отображения локального изображения
+ * @function
+ * @param {object} - данные изображения
+ * @returns {JSX} - Разметка страницы
+ */
 const LoadImageLocal = observer(({Img, getFileImg}) => {
     const {taskInstance} = useContext(Context)
     const [drag, setDrag] = useState(false)

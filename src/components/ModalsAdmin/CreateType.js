@@ -4,6 +4,12 @@ import {postType} from "../../http/UserApi";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 
+/**
+ * Компонента для отображения создания типа
+ * @function
+ * @param {object} - данные о параметрах типа
+ * @returns {JSX} - Разметка страницы
+ */
 const CreateType = observer(({show, onHide}) => {
     const [typeValue, setTypeValue] = useState('')
     const {taskInstance, device, user} = useContext(Context)

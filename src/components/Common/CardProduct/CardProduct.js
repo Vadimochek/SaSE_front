@@ -8,6 +8,13 @@ import star from "../../../assets/svg/star.svg";
 import './CardProduct.css'
 import {Rating} from "@mui/material";
 
+/**
+ * Компонента отображения кнопки корзины
+ * @function
+ * @param {object} observer - настройки отображения
+ * @returns {JSX} - Разметка страницы
+ */
+
 
 export const ButtonBasket = observer(({id = null, price =null , classCust ='', color = 'primary'})=>{
 
@@ -31,6 +38,12 @@ export const ButtonBasket = observer(({id = null, price =null , classCust ='', c
     </Button>
 })
 
+/**
+ * Компонента отображения карточки продукта
+ * @function
+ * @param {object} observer - данные устройства
+ * @returns {JSX} - Разметка страницы
+ */
 export const CardProduct = observer(({device}) => {
     const history = useHistory()
     const {basket, user} = useContext(Context)

@@ -8,6 +8,11 @@ import {DotLoader, FadeLoader, MoonLoader, PacmanLoader} from "react-spinners";
 import './Device.css'
 import {CardProduct} from "../../Common/CardProduct/CardProduct";
 
+/**
+ * Компонента для отображения списка устройств
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const DeviceList = observer(() => {
     const {device, user, taskInstance} = useContext(Context)
     const history = useHistory()

@@ -52,6 +52,12 @@ const style = {
     p: 4,
 };
 
+/**
+ * Компонента для изменения ФИО
+ * @function
+ * @param {object} - данные о человеке
+ * @returns {JSX} - Разметка страницы
+ */
 const EditFio = observer( ({open, handleClose, firstName, lastName, middleName, getNewFio, isEditFio}) => {
     const classes = useStyles()
 
@@ -191,7 +197,12 @@ const EditFio = observer( ({open, handleClose, firstName, lastName, middleName, 
     );
 });
 
-
+/**
+ * Компонента для настройки устройств
+ * @function
+ * @param {object} props- данные о устроействе
+ * @returns {JSX} - Разметка страницы
+ */
 function InputDevice(props) {
 
     const [field, meta] = useField(props);

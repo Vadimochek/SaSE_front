@@ -3,6 +3,10 @@ import {getImageByName, giveDeviceById} from "../../http/UserApi";
 import {editDevice} from "../../http/EditApi";
 import {deleteDevice} from "../../http/DeleteApi";
 
+/**
+ * Класс-хранилище одного устройства
+ * @class
+ */
 
 export default class OneDeviceStore {
     constructor() {

@@ -29,6 +29,12 @@ const style = {
     p: 4,
 };
 
+/**
+ * Компонента для изменения пола
+ * @function
+ * @param {object} - данные о человеке
+ * @returns {JSX} - Разметка страницы
+ */
 const EditGender = observer( ({open, handleClose, gender, isEditGender, getNewGender})=> {
     return (
         <div>

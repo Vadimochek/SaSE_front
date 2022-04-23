@@ -19,7 +19,12 @@ import './DeleteBrand.css'
 import {store} from './../storeDeleteBrand'
 import {Context} from "../../../../index";
 
-
+/**
+ * Компонента для удаления бренда
+ * @function
+ * @param {object} - параметры бренда
+ * @returns {JSX} - Разметка страницы
+ */
 const DeleteBrand = observer(({show, onHide}) => {
     const {taskInstance} = useContext(Context)
     const [isEdit, setIsEdit] = useState(false)
@@ -158,7 +163,12 @@ const DeleteBrand = observer(({show, onHide}) => {
     );
 });
 
-
+/**
+ * Компонента для показа брендов
+ * @function
+ * @param {object} - данные хранилища брендов
+ * @returns {JSX} - Разметка страницы
+ */
 const MultipleSelectChip = observer(({store}) => {
     const [personName, setPersonName] = React.useState('');
 

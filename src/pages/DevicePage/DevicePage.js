@@ -30,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * Компонента, которая отрисовывает страницу устройства
+ * @function
+ * @returns {JSX} Разметка страницы
+ */
 
 const DevicePage = observer(() => {
         const classes = useStyles()

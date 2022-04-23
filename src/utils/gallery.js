@@ -3,7 +3,10 @@ const GalleryLineClassName = 'gallery-line'
 const GallerySlideClassName = 'gallery-slide';
 
 
-
+/**
+ * Класс-галерея для правильной конфигурации отображения
+ * @class
+ */
 
 export class Gallery {
     constructor(element, options= {}){
@@ -145,6 +148,12 @@ export class Gallery {
 
 
 //Helpers 
+/**
+ * Функция перерисовки элемента
+ * @function
+ * @param {object} - данные для перерисовки
+ * @returns {htmldivelement} Элемент страницы
+ */
 
 function wrapElementByDiv({element, className}) {
     const wrapperNode = document.createElement('div');

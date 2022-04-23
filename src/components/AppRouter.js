@@ -10,7 +10,11 @@ import DevicePage from "../pages/DevicePage/DevicePage";
 
 
 
-
+/**
+ * Компонента для настройки и отображения маршрутов приложения
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 
 const AppRouter = observer(() => {
     const {user} = useContext(Context)

@@ -12,6 +12,11 @@ import {Footer} from "./components/Shop/MainShop/MainShop";
 
 
 
+/**
+ * Главная компонента приложения, в которой используются хуки UseEffect, UseContext, UseState.
+ * @function
+ * @returns {JSX} Основная разметка страницы
+ */
 
 const App = observer(function () {
 

@@ -12,6 +12,11 @@ const Container = styled.div`
   bottom: 2rem;
 `
 
+/**
+ * Компонента тасков, в которой используются хуки UseEffect, UseContext.
+ * @function
+ * @returns {JSX} Разметка страницы с тасками
+ */
 
 const TaskContainer = observer(() => {
     const {taskInstance} = useContext(Context)
@@ -37,6 +42,11 @@ const TaskContainer = observer(() => {
     );
 });
 
+/**
+ * Компонента элемента тасков.
+ * @function
+ * @returns {JSX} Разметка страницы с элементом
+ */
 
 const TaskElem = ({el, taskInstance}) => {
     el.status.toLowerCase()

@@ -24,7 +24,11 @@ const useStyles = makeStyles((theme) => ({
     })
 )
 
-
+/**
+ * Компонента, которая отрисовывает страницу магазина
+ * @function
+ * @returns {JSX} Разметка страницы магазина
+ */
 const Shop = observer(() => {
     const {device, user, taskInstance} = useContext(Context)
     const {type: typeUrl} = useParams();

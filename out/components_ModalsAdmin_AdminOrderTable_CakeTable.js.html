@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ModalsAdmin/AdminOrderTable/CakeTable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ModalsAdmin/AdminOrderTable/CakeTable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useContext} from 'react';
+import {
+    Box, Button,
+    Collapse,
+    FormControl,
+    IconButton,
+    InputLabel,
+    makeStyles,
+    MenuItem, Paper,
+    Select, Table, TableBody,
+    TableCell, TableHead,
+    TableRow, Typography, withStyles
+} from "@material-ui/core";
+import {MdKeyboardArrowDown, MdKeyboardArrowUp} from "react-icons/all";
+import date from 'date-and-time';
+import {Context} from "../../../index";
+import {orderStore} from "../../../store/OrderStore";
+import {styled} from "@material-ui/core/styles";
+
+
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2)
+    },
+    cakeStyles: {
+        margin: theme.spacing(5, 1, 10),
+        fontWeight: theme.typography.fontWeightLight,
+        color: theme.palette.primary.light,
+    },
+    insertedTable:{
+        backgroundColor: '#EEEEEE'
+    },
+
+    insertedTableHead: {
+        ...theme.typography.subtitle1,
+        fontWeight: theme.typography.fontWeightMedium,
+        fontSize: '1.1rem',
+        color: theme.palette.common.black
+    },
+
+    hoverRowInsertedTable:{
+        padding: '0',
+        backgroundColor: '#EEEEEE',
+        transition: '0.5s',
+        '&amp;:hover': {
+            backgroundColor: theme.palette.common.white,
+        },
+    },
+    insertedTableTypography1: {
+        padding: '0 1rem',
+        fontWeight: theme.typography.fontWeightRegular,
+        color: theme.palette.common.black,
+        /*transition: '0.25s',
+        '&amp;:hover': {
+            backgroundColor: theme.palette.primary.light,
+        },*/
+    },
+    insertedTableTypography2: {
+        fontWeight: theme.typography.fontWeightBold,
+        color: theme.palette.secondary.light,
+        /*transition: '0.25s',
+        '&amp;:hover': {
+            backgroundColor: theme.palette.primary.light,
+        },*/
+    }
+}));
+
+/**
+ * Компонента отображения заголовка ячейки
+ * @function
+ * @param {object} - ячейки
+ * @returns {JSX} - Разметка страницы
+ */
+export const InsertedTableCellHead = ({children, ...other}) =>{
+    const classes = useStyles()
+
+    return(
+        &lt;TableCell className={classes.insertedTableHead} {...other} >
+            {children}
+        &lt;/TableCell>
+    )
+}
+
+/**
+ * Компонента отображения ячейки
+ * @function
+ * @param {object} - данные ячейки
+ * @returns {JSX} - Разметка страницы
+ */
+
+const InsertedTableCellBody = ({children, ...other}) =>{
+    const classes = useStyles()
+
+    return(
+        &lt;TableCell className={classes.insertedTableTypography1} {...other} >
+            {children}
+        &lt;/TableCell>
+    )
+}
+
+
+/**
+ * Компонента отображения таблицы
+ * @function
+ * @param {object} - данные таблицы
+ * @returns {JSX} - Разметка страницы
+ */
+const CakeTable = ({isUserTable = false, row}) => {
+
+    console.log('totalSum: ', row)
+
+    const {taskInstance, user} = useContext(Context)
+
+
+    const [open, setOpen] = React.useState(false);
+    const [status, setStatus] = React.useState("");
+    const [isStatusDisabled, setIsStatusDisabled] = React.useState(false);
+    const classes = useStyles()
+
+    const userCheckCallback = (status, info) => {
+        return user.checkStatus(status, info)
+    }
+
+    const handleChange = (event) => {
+
+
+
+        const callbackChangeStatus = () => {
+            setStatus(event.target.value)
+            setIsStatusDisabled(false)
+        };
+
+        orderStore.changeOrderStatus({
+            "id": row.id,
+            "status": event.target.value
+        }, userCheckCallback, taskInstance, callbackChangeStatus)
+
+    };
+
+    return (
+        &lt;>
+            &lt;TableRow>
+                &lt;TableCell>
+                    &lt;IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                        {open ? &lt;MdKeyboardArrowDown/> : &lt;MdKeyboardArrowUp/>}
+                    &lt;/IconButton>
+                &lt;/TableCell>
+                &lt;TableCell component="th" scope="row">
+                    {row.id}
+                &lt;/TableCell>
+                &lt;TableCell align="left">{row?.order_devicesDTO?.length}&lt;/TableCell>
+                &lt;TableCell align="right">{row?.totalSumCheck?.toLocaleString()} ₽&lt;/TableCell>
+                &lt;TableCell align="right">{date.format(new Date(row.dataOfCreate), 'YYYY/MM/DD HH:mm:ss')}&lt;/TableCell>
+                {isUserTable || &lt;TableCell align="right">
+                    &lt;FormControl variant="outlined" className={classes.formControl}>
+                        &lt;InputLabel>Status&lt;/InputLabel>
+                        &lt;Select
+                            disabled={isStatusDisabled}
+                            IconComponent={MdKeyboardArrowDown}
+                            value={status ? status : row.status}
+                            label="Status"
+                            onChange={handleChange}
+                        >
+                            &lt;MenuItem value={'ACTIVE'}>
+                                ACTIVE
+                            &lt;/MenuItem>
+                            &lt;MenuItem value={'INACTIVE'}>
+                                INACTIVE
+                            &lt;/MenuItem>
+                        &lt;/Select>
+                    &lt;/FormControl>
+
+                &lt;/TableCell>}
+
+            &lt;/TableRow>
+            {open &amp;&amp;
+            &lt;TableRow>
+                &lt;TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
+
+                    &lt;Box className={classes.cakeStyles}>
+                        &lt;Typography className={classes.insertedTableTypography2} variant="h5" gutterBottom component="div">
+                            History
+                        &lt;/Typography>
+                        &lt;Table className={classes.insertedTable} size="small" aria-label="purchases">
+                            &lt;TableHead>
+                                &lt;TableRow>
+                                    &lt;InsertedTableCellHead>Имя товара&lt;/InsertedTableCellHead>
+                                    &lt;InsertedTableCellHead>Тип устройства&lt;/InsertedTableCellHead>
+                                    &lt;InsertedTableCellHead align="right">Цена за единицу (₽)&lt;/InsertedTableCellHead>
+                                    &lt;InsertedTableCellHead align="right">Кол. товара&lt;/InsertedTableCellHead>
+                                    &lt;InsertedTableCellHead align="right">Итого (₽)&lt;/InsertedTableCellHead>
+                                    &lt;InsertedTableCellHead align="right">Открыть карточку товара&lt;/InsertedTableCellHead>
+                                &lt;/TableRow>
+                            &lt;/TableHead>
+                            &lt;TableBody >
+                                {row.order_deviceResponseModels.map((product) => (
+                                    &lt;TableRow className={classes.hoverRowInsertedTable} key={product.deviceResponseModel.id}>
+                                        &lt;InsertedTableCellBody component="th" scope="row">
+                                            {product.deviceResponseModel.name}
+                                        &lt;/InsertedTableCellBody>
+                                        &lt;InsertedTableCellBody align="left">{product.deviceResponseModel.typeName}&lt;/InsertedTableCellBody>
+                                        &lt;InsertedTableCellBody align="right">{product.deviceResponseModel.price.toLocaleString()} ₽&lt;/InsertedTableCellBody>
+                                        &lt;InsertedTableCellBody align="right">{product.amountOfProduct}&lt;/InsertedTableCellBody>
+                                        &lt;InsertedTableCellBody className={classes.insertedTableTypography2} align="right">
+                                            {(Number(product.deviceResponseModel.price) * product.amountOfProduct).toLocaleString()} ₽
+                                        &lt;/InsertedTableCellBody>
+                                        &lt;InsertedTableCellBody align="right">
+                                            &lt;Button className={classes.insertedTableTypography1}>
+                                                Открыть
+                                            &lt;/Button>
+                                        &lt;/InsertedTableCellBody>
+                                    &lt;/TableRow>
+                                ))}
+                            &lt;/TableBody>
+                        &lt;/Table>
+                    &lt;/Box>
+
+                &lt;/TableCell>
+            &lt;/TableRow>
+            }
+
+        &lt;/>
+    );
+};
+
+export default CakeTable;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Gallery.html">Gallery</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Slider.html">Slider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#a11yProps">a11yProps</a></li><li><a href="global.html#AddOrderInfoToServer">AddOrderInfoToServer</a></li><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#AdminOrderTable">AdminOrderTable</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#authRoutes">authRoutes</a></li><li><a href="global.html#Basket">Basket</a></li><li><a href="global.html#BasketCard">BasketCard</a></li><li><a href="global.html#ButtonBasket">ButtonBasket</a></li><li><a href="global.html#CakeTable">CakeTable</a></li><li><a href="global.html#CardProduct">CardProduct</a></li><li><a href="global.html#changeOrderStatus">changeOrderStatus</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#codeConfirmation">codeConfirmation</a></li><li><a href="global.html#CreateBrand">CreateBrand</a></li><li><a href="global.html#CreateDeviceContainer">CreateDeviceContainer</a></li><li><a href="global.html#CreateType">CreateType</a></li><li><a href="global.html#DeleteBrand">DeleteBrand</a></li><li><a href="global.html#deleteBrand">deleteBrand</a></li><li><a href="global.html#deleteDevice">deleteDevice</a></li><li><a href="global.html#DeleteType">DeleteType</a></li><li><a href="global.html#deleteType">deleteType</a></li><li><a href="global.html#DeviceItem">DeviceItem</a></li><li><a href="global.html#DeviceList">DeviceList</a></li><li><a href="global.html#DevicePage">DevicePage</a></li><li><a href="global.html#editBrand">editBrand</a></li><li><a href="global.html#editDevice">editDevice</a></li><li><a href="global.html#EditFio">EditFio</a></li><li><a href="global.html#editFio">editFio</a></li><li><a href="global.html#EditGender">EditGender</a></li><li><a href="global.html#editGender">editGender</a></li><li><a href="global.html#editType">editType</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#getAllOrders">getAllOrders</a></li><li><a href="global.html#getDevices">getDevices</a></li><li><a href="global.html#getDevices_24">getDevices_24</a></li><li><a href="global.html#getImageByName">getImageByName</a></li><li><a href="global.html#getInfoAboutUser">getInfoAboutUser</a></li><li><a href="global.html#getOrderItemsUser">getOrderItemsUser</a></li><li><a href="global.html#getTypeBrand">getTypeBrand</a></li><li><a href="global.html#giveDeviceById">giveDeviceById</a></li><li><a href="global.html#giveDeviceServer">giveDeviceServer</a></li><li><a href="global.html#InputDevice">InputDevice</a></li><li><a href="global.html#InputPriceDevice">InputPriceDevice</a></li><li><a href="global.html#InsertedTableCellBody">InsertedTableCellBody</a></li><li><a href="global.html#InsertedTableCellHead">InsertedTableCellHead</a></li><li><a href="global.html#KodFormatCustom">KodFormatCustom</a></li><li><a href="global.html#LoadImageLink">LoadImageLink</a></li><li><a href="global.html#LoadImageLocal">LoadImageLocal</a></li><li><a href="global.html#Lock">Lock</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#MainShop">MainShop</a></li><li><a href="global.html#ModalDevice">ModalDevice</a></li><li><a href="global.html#MultipleSelectChip">MultipleSelectChip</a></li><li><a href="global.html#MyPagination">MyPagination</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NumberFormatCustom">NumberFormatCustom</a></li><li><a href="global.html#postBrand">postBrand</a></li><li><a href="global.html#postType">postType</a></li><li><a href="global.html#PresentationComponentLoadLink">PresentationComponentLoadLink</a></li><li><a href="global.html#publicRoutes">publicRoutes</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#registration">registration</a></li><li><a href="global.html#SettingsBar">SettingsBar</a></li><li><a href="global.html#Shop">Shop</a></li><li><a href="global.html#TableUserOrder">TableUserOrder</a></li><li><a href="global.html#TabPanel">TabPanel</a></li><li><a href="global.html#TaskContainer">TaskContainer</a></li><li><a href="global.html#TaskElem">TaskElem</a></li><li><a href="global.html#TextMaskCustom">TextMaskCustom</a></li><li><a href="global.html#TypeBar">TypeBar</a></li><li><a href="global.html#UnderHeaderMenu">UnderHeaderMenu</a></li><li><a href="global.html#Unlock">Unlock</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPagePaper">UserPagePaper</a></li><li><a href="global.html#wrapElementByDiv">wrapElementByDiv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 16:24:14 GMT+0300 (Москва, стандартное время)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

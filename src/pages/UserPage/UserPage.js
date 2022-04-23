@@ -25,6 +25,12 @@ import EditGender from "../../components/UserPage/EditGender";
 import AlertDialog from "../../components/Common/AlertDialog/alert";
 
 
+/**
+ * Функция приложения для использования пользовательского стиля.
+ * @function
+
+ */
+
 const UserPagePaper = styled(Paper)({
     background: ({isGradient}) => isGradient ? 'linear-gradient(110deg, rgba(156,156,156,0) 30%, rgba(0,123,255,1) 140%)' : 'white',
     border: 0,
@@ -32,6 +38,7 @@ const UserPagePaper = styled(Paper)({
     padding: '0 30px',
     marginBottom: '2rem',
 });
+
 
 const useStyles = makeStyles(theme => ({
     accordion: {
@@ -46,6 +53,11 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
+/**
+ * Компонента, которая отрисовывает страницу админа
+ * @function
+ * @returns {JSX} Разметка страницы пользователя
+ */
 
 const UserPage = observer(() => {
 

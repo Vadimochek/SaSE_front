@@ -8,6 +8,12 @@ import {Context} from "../../../index";
 import './Device.css'
 import {observer} from "mobx-react-lite";
 
+/**
+ * Компонента для отображения позиции устройства
+ * @function
+ * @param {object} - данные о устройстве
+ * @returns {JSX} - Разметка страницы
+ */
 const DeviceItem = observer(({device}) => {
     const history = useHistory()
     const {basket, user} = useContext(Context)

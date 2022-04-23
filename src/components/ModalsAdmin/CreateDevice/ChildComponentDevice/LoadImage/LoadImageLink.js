@@ -6,6 +6,12 @@ import {observer} from "mobx-react-lite";
 import {ClockLoader} from "react-spinners";
 import {AiOutlineEnter} from "react-icons/all";
 
+
+/**
+ * Компонента отображения ссылки изображения
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const LoadImageLink = observer(() => {
 
     const [link, setLink] = useState('')
@@ -23,7 +29,12 @@ const LoadImageLink = observer(() => {
     );
 });
 
-
+/**
+ * Компонента отображения изображения
+ * @function
+ * @param {object} - данные ссылки
+ * @returns {JSX} - Разметка страницы
+ */
 export const PresentationComponentLoadLink = ({toStateLink, Link})=>{
 
     const [link, setLink] = React.useState('')

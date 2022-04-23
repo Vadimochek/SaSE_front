@@ -17,6 +17,11 @@ import {Button, Input, Slider} from "@mui/material";
 
 const minDistance = 1000
 
+/**
+ * Компонента для отображения меню настроек
+ * @function
+ * @returns {JSX} - Разметка страницы
+ */
 const SettingsBar = observer(() => {
     const {device} = useContext(Context)
     const {type: typeUrl} = useParams();

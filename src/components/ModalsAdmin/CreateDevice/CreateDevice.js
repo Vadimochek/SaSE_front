@@ -7,7 +7,12 @@ import NameAndPriceInput from "./ChildComponentDevice/NameAndPriceInput.jsx";
 import LoadImage from "./ChildComponentDevice/LoadImage/LoadImage";
 
 
-
+/**
+ * Компонента, создающая контейнер для устройства
+ * @function
+ * @param {object} - параметры для создания контейнера
+ * @returns {JSX} - Разметка страницы
+ */
 const CreateDeviceContainer = observer(({show, onHide, createDevice}) => {
     const {device, user, taskInstance} = useContext(Context)
     const [info, setInfo] = useState([])

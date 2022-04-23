@@ -88,6 +88,12 @@ export const useStylesPopupCategory = makeStyles((theme) => ({
 
 export const menu = new MenuStore()
 
+/**
+ * Компонента для отображения вспомогательного меню
+ * @function
+ * @param {object} - конфигурационные параметры
+ * @returns {JSX} - Разметка страницы
+ */
 
 const UnderHeaderMenu = observer(({handleLock}) => {
     const classes = useStylesPopupCategory()
